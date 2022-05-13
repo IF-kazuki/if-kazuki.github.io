@@ -117,9 +117,6 @@ const SPA = class {
         this.backRoot = "";
       }
 
-      /** record page transitions */
-      S.setLS("PATH", params);
-
       for (let i = 0; i < value.length; i++) {
         if (target && structure[target]) {
           setDOM(`${baseUrl}/${target}/${structure[target][params]}`, target);
@@ -130,6 +127,9 @@ const SPA = class {
           throw new Error("404 not found pages");
         }
       }
+
+      /** record page transitions */
+      S.setLS("PATH", params);
     };
 
     const path = S.getLS("PATH");
