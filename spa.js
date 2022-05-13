@@ -112,6 +112,12 @@ const SPA = class {
     this.assembly = (target) => {
       let params = location.pathname;
       if (this.modeRoot !== "") params = this.modeRoot;
+      if (this.backRoot !== "") {
+        params = this.backRoot;
+        this.backRoot = "";
+      }
+
+      /** record page transitions */
       S.setLS("PATH", params);
 
       for (let i = 0; i < value.length; i++) {
@@ -126,9 +132,11 @@ const SPA = class {
       }
     };
 
+    const path = S.getLS("PATH");
+    if (path) this.backRoot = path;
+
     /** initial rendering */
     createInitialDom(key);
-    if (S.getLS("PATH")) this.backRoot = S.getLS("PATH");
     this.assembly();
   }
 
