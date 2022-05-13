@@ -3,7 +3,7 @@
 
   <h1 class="title">hello world!!</h1>
   <div class="main">
-    <a id="/doc" class="main__link">Document</a>
+    <a id="main-doc" class="main__link">Document</a>
     <a
       href="https://github.com/IF-kazuki/if-kazuki.github.io"
       target="__blank"
@@ -13,24 +13,65 @@
   </div>
 
   <div class="intro">
-    <h2 class="intor__name">kazuki</h2>
-    <p>i started programming in august 2021.</p>
-    <p>
-      since january 2022, I'v been using NextJS and NestJS primarily in
-      TypeScript.
-    </p>
+    <div class="intro__img">
+      <img src="../assets/icon.jpg" alt="icon" />
+    </div>
+    <div class="intro__text">
+      <h2 class="name">kazuki</h2>
+      <p>i started programming in august 2021.</p>
+      <p>
+        since january 2022, I'v been using NextJS and NestJS primarily in
+        TypeScript.
+      </p>
+    </div>
+  </div>
+
+  <div class="list">
+    <div class="list__item">
+      <p class="item__date">August 2022</p>
+      <div>
+        <p class="item__name">mobile app</p>
+        <p>
+          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam
+          consequatur ad optio delectus, voluptate molestiae repudiandae eaque
+          quidem minus cupiditate.
+        </p>
+      </div>
+    </div>
+    <div class="list__item">
+      <p class="item__date">June 2022</p>
+      <div>
+        <p class="item__name">web shop</p>
+        <p>
+          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aut, quos
+          quam! Officiis enim suscipit, voluptas odit odio possimus doloremque
+          consectetur.
+        </p>
+      </div>
+    </div>
+    <div class="list__item">
+      <p class="item__date">September 2022</p>
+      <div>
+        <p class="item__name">public blog</p>
+        <p>
+          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam
+          consequatur ad optio delectus, voluptate molestiae repudiandae eaque
+          quidem minus cupiditate.
+        </p>
+      </div>
+    </div>
   </div>
 </text>
 
 <script>
-  Link("/doc", "main");
+  Link("main-doc", "/doc", "main");
 </script>
 
 <style>
   .title {
     text-align: center;
     font-size: 64px;
-    margin: 32px 0;
+    margin-bottom: 32px;
   }
   .main {
     display: flex;
@@ -38,15 +79,66 @@
     margin-bottom: 64px;
   }
   .main__link {
-    margin: 0 16px;
+    margin: 0 32px;
+    cursor: pointer;
+    font-size: 20px;
   }
   .intro {
+    width: 50vw;
+    min-width: 300px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    margin-bottom: 48px;
+  }
+  .intro__img img {
+    width: 10vw;
+    min-width: 160px;
+    border-radius: 5px;
+  }
+  .intro__text {
+    margin: 0 auto;
+  }
+  .name {
+    font-size: 24px;
+    margin: 8px 0;
+  }
+  @media (max-width: 425px) {
+    .intro__img {
+      text-align: center;
+    }
+  }
+  @media (max-width: 768px) {
+    .intro {
+      flex-direction: column;
+    }
+  }
+  .list {
     width: 60vw;
     min-width: 300px;
     margin: 0 auto;
+    margin-bottom: 64px;
   }
-  .intor__name {
-    font-size: 24px;
-    margin: 8px 0;
+  .list__item {
+    display: flex;
+    padding: 16px 0;
+    margin: 4px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  }
+  .item__date {
+    margin: 0 16px;
+    min-width: 136px;
+    white-space: nowrap;
+  }
+  .item__name {
+    margin-bottom: 8px;
+  }
+  @media (max-width: 768px) {
+    .list__item {
+      flex-direction: column;
+    }
+    .item__date {
+      margin: 8px 0;
+    }
   }
 </style>

@@ -1,30 +1,44 @@
 /**
- * k  k     a    zzzzz  u   u  k  k   i
- * k k     a a      z   u   u  k k    i
- * kkk    aaaaa    z    u   u  kkk    i
- * k  k   a   a   z     u   u  k  k   i
- * k   k  a   a  zzzzz   uuu   k   k  i
+ *  sss   pppp     a           j   sss
+ * s   s  p   p   a a             s   s
+ *  s     pppp   a   a         j   s
+ *   s    p      aaaaa         j    s
+ *    s   p      a   a         j     s
+ * s   s  p      a   a     j   j  s   s
+ *  sss   p      a   a  @   jjj    sss
  */
 
 /**
- * @description get the dom tag
- * @param {string} target
- * @returns dom element
+ * @description
+ * - functions to get DOM elements
+ * - functions to operate local storage
  */
-const devGetTag = (target) => {
-  const element = document.getElementsByTagName(target)[0];
-  return element;
-};
+const S = new (class {
+  /**
+   * @description get dom element
+   * @param {string} tag
+   * @param {string} id
+   * @param {document} doc
+   * @returns dom element
+   */
+  tag = (tag) => document.getElementsByTagName(tag)[0];
+  id = (id) => document.getElementById(id);
+  tagA = (doc, tag) => doc.activeElement.getElementsByTagName(tag)[0];
 
-/**
- * @description get the dom id
- * @param {string} target
- * @returns dom element
- */
-const devGetId = (target) => {
-  const element = document.getElementById(target);
-  return element;
-};
+  /**
+   * @description get local storage
+   * @param {string} key
+   * @param {string} value
+   * @returns local storage value
+   */
+  setLS = (key, value) => {
+    const text = JSON.stringify(value);
+    localStorage.setItem(key, text);
+  };
+  getLS = (key) => {
+    localStorage.getItem(key);
+  };
+})();
 
 /**
  * @description
@@ -40,105 +54,115 @@ const setDOM = (url, target) => {
     const doc = parser.parseFromString(html, "text/html");
 
     /** dom crear */
-    const root = document.getElementsByTagName(target)[0];
-    root.innerHTML = "";
+    S.tag(target).innerHTML = "";
 
-    /** text style tag insert */
-    const element = (tag) => {
-      const element = doc.activeElement.getElementsByTagName(tag)[0];
-      return element;
-    };
-
-    let allElement = "";
-    if (element("text")) {
-      allElement += element("text").innerHTML;
+    /** text tag and style tag insert */
+    let element = "";
+    if (S.tagA(doc, "text")) {
+      element += S.tagA(doc, "text").innerHTML;
     } else {
       throw new Error(`missing text tag at ${target}`);
     }
-    if (element("style")) {
-      allElement += `<style>${element("style").innerText}</style>`;
+    if (S.tagA(doc, "style")) {
+      element += `<style>${S.tagA(doc, "style").innerText}</style>`;
     }
-
-    devGetTag(target).innerHTML = allElement;
+    S.tag(target).innerHTML = element;
 
     /** script tag insert */
-    if (element("script")) {
+    if (S.tagA(doc, "script")) {
       const script = document.createElement("script");
-      script.innerHTML = element("script").innerText;
+      script.innerHTML = S.tagA(doc, "script").innerText;
 
-      devGetTag(target).appendChild(script);
+      S.tag(target).appendChild(script);
     }
   });
+};
+
+/**
+ * @description parent DOM generetion
+ * @param {Array<string>} key
+ */
+const createInitialDom = (key) => {
+  for (let i = 0; i < key.length; i++) {
+    const dom = document.createElement(key[i]);
+    S.id("root").append(dom);
+  }
 };
 
 /**
  * @description
  * get the URL structure adn apply the script according to the structure
  * @param {string} baseUrl
- * @param {*} URLstructure
+ * @param {*} structure
  * @returns
  * Link
  *  - providers the ability to swap DOM elements
  */
 const SPA = class {
-  constructor(baseUrl, URLstructure) {
-    /** start massege */
-    console.log("start spa !!");
-
-    /** parent DOM generetion */
-    const key = Object.keys(URLstructure);
-
-    for (let i = 0; i < key.length; i++) {
-      const dom = document.createElement(key[i]);
-      devGetId("root").append(dom);
-    }
+  constructor(baseUrl, structure) {
+    this.modeRoot = "";
+    const key = Object.keys(structure);
+    const value = Object.values(structure);
 
     /**
      * @description create a script for each structure
      * @param {string} target
      */
-    const router = (target) => {
-      const value = Object.values(URLstructure);
-      const params = location.pathname;
+    this.assembly = (target) => {
+      let params = location.pathname;
+      if (this.modeRoot !== "") params = this.modeRoot;
+      S.setLS("PTHE", params);
 
       for (let i = 0; i < value.length; i++) {
-        if (URLstructure[target]) {
-          setDOM(
-            `${baseUrl}/${target}/${URLstructure[target][params]}`,
-            target
-          );
+        if (target && structure[target]) {
+          setDOM(`${baseUrl}/${target}/${structure[target][params]}`, target);
           break;
-        }
-
-        if (value[i][params]) {
+        } else if (value[i][params]) {
           setDOM(`${baseUrl}/${key[i]}/${value[i][params]}`, key[i]);
+        } else {
+          throw new Error("404 not found pages");
         }
       }
     };
 
-    /**
-     * @description switch DOM
-     * @param {string} id
-     */
-    const Link = (id, target) => {
-      const a = devGetId(id);
-
-      a.onclick = () => {
-        history.replaceState("", "", `${a.id}`);
-
-        router(target);
-      };
-    };
-
     /** initial rendering */
-    router();
-    return { Link };
+    createInitialDom(key);
+    this.assembly();
   }
+
+  /**
+   * @description switch DOM
+   * @param {string} id
+   */
+  Link = (id, path, target) => {
+    if (this.modeRoot !== "") return;
+
+    const a = S.id(id);
+    a.onclick = () => {
+      history.replaceState("", "", `${path}`);
+
+      this.assembly(target);
+    };
+  };
+
+  /**
+   * @description
+   * development function set the specified URL as the index URL
+   * @param {string} url
+   */
+  devMode = (url) => {
+    console.log(`developer mode target path -> ${url}`);
+
+    this.modeRoot = url;
+    this.assembly();
+  };
 };
 
 /**
  * @description
+ * a function that returns to the index and rebuilds
+ * when the page is visited directly
  */
 const NotFound = () => {
-  window.location.href = `./`;
+  window.location.href = "./";
 };

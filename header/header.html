@@ -1,19 +1,21 @@
 <text>
   <div class="header">
-    <a id="/" class="header__logo">SPA.JS</a>
+    <a id="header-index" class="header__logo">spa.js</a>
   </div>
 </text>
 
 <style>
   .header {
-    margin: 16px;
+    margin-top: 16px;
+    padding: 0 16px;
+    margin-bottom: 48px;
   }
-
   .header__logo {
     font-size: 24px;
+    cursor: pointer;
   }
 </style>
 
 <script>
-  Link("/", "main");
+  Link("header-index", "/", "main");
 </script>
