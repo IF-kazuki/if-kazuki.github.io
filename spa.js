@@ -112,7 +112,7 @@ const SPA = class {
     this.assembly = (target) => {
       let params = location.pathname;
       if (this.modeRoot !== "") params = this.modeRoot;
-      S.setLS("PTHE", params);
+      S.setLS("PATH", params);
 
       for (let i = 0; i < value.length; i++) {
         if (target && structure[target]) {
