@@ -31,13 +31,9 @@ const S = new (class {
    * @param {string} value
    * @returns local storage value
    */
-  setLS = (key, value) => {
-    const text = JSON.stringify(value);
-    localStorage.setItem(key, text);
-  };
-  getLS = (key) => {
-    localStorage.getItem(key);
-  };
+  setLS = (key, value) => localStorage.setItem(key, value);
+  getLS = (key) => localStorage.getItem(key);
+  delLS = (key) => localStorage.removeItem(key);
 })();
 
 /**
@@ -112,32 +108,33 @@ const SPA = class {
     this.assembly = (target) => {
       let params = location.pathname;
       if (this.modeRoot !== "") params = this.modeRoot;
-      if (this.backRoot !== "") {
-        params = this.backRoot;
-        this.backRoot = "";
-      }
+      if (this.backRoot !== "") params = this.backRoot;
 
+      console.log("/doc");
       for (let i = 0; i < value.length; i++) {
-        if (target && structure[target]) {
+        if (structure[target]) {
           setDOM(`${baseUrl}/${target}/${structure[target][params]}`, target);
           break;
         } else if (value[i][params]) {
           setDOM(`${baseUrl}/${key[i]}/${value[i][params]}`, key[i]);
-        } else {
-          throw new Error("404 not found pages");
         }
       }
-
-      /** record page transitions */
-      S.setLS("PATH", params);
     };
-
-    const path = S.getLS("PATH");
-    if (path) this.backRoot = path;
 
     /** initial rendering */
     createInitialDom(key);
     this.assembly();
+
+    /** jump to the page ypu were browsing in the past. direct link measures */
+    const path = S.getLS("PATH");
+    const flag = S.getLS("NOTFOUND");
+    if (path !== "/" && flag === "true") {
+      this.backRoot = path;
+      history.replaceState("", "", path);
+      this.assembly();
+      this.backRoot = "";
+      S.setLS("NOTFOUND", false);
+    }
   }
 
   /**
@@ -149,7 +146,10 @@ const SPA = class {
 
     const a = S.id(id);
     a.onclick = () => {
-      history.replaceState("", "", `${path}`);
+      history.replaceState("", "", path);
+
+      /** record page transitions */
+      S.setLS("PATH", path);
 
       this.assembly(target);
     };
@@ -174,5 +174,6 @@ const SPA = class {
  * when the page is visited directly
  */
 const NotFound = () => {
+  S.setLS("NOTFOUND", true);
   window.location.href = "./";
 };
