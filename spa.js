@@ -101,6 +101,7 @@ const createInitialDom = (key) => {
 const SPA = class {
   constructor(baseUrl, structure) {
     this.modeRoot = "";
+    this.backRoot = "";
     const key = Object.keys(structure);
     const value = Object.values(structure);
 
@@ -127,6 +128,7 @@ const SPA = class {
 
     /** initial rendering */
     createInitialDom(key);
+    if (S.getLS("PATH")) this.backRoot = S.getLS("PATH");
     this.assembly();
   }
 
