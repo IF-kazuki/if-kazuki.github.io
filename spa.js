@@ -23,6 +23,7 @@ const S = new (class {
    */
   tag = (tag) => document.getElementsByTagName(tag)[0];
   id = (id) => document.getElementById(id);
+  tagD = (doc, tag) => doc.getElementsByTagName(tag)[0];
   tagA = (doc, tag) => doc.activeElement.getElementsByTagName(tag)[0];
 
   /**
@@ -51,6 +52,13 @@ const setDOM = (url, target) => {
 
     /** dom crear */
     S.tag(target).innerHTML = "";
+
+    /** head tag insert */
+    if (S.tagD(doc, "top")) {
+      if (S.tag("top")) S.tag("top").remove();
+      const head = S.tagD(doc, "top");
+      S.tag("head").append(head);
+    }
 
     /** text tag and style tag insert */
     let element = "";
@@ -88,14 +96,14 @@ const createInitialDom = (key) => {
 /**
  * @description
  * get the URL structure adn apply the script according to the structure
- * @param {string} baseUrl
  * @param {*} structure
  * @returns
  * Link
  *  - providers the ability to swap DOM elements
  */
-const SPA = class {
-  constructor(baseUrl, structure) {
+const Main = class {
+  constructor(structure) {
+    this.url = location.protocol;
     this.modeRoot = "";
     this.backRoot = "";
     const key = Object.keys(structure);
@@ -110,13 +118,12 @@ const SPA = class {
       if (this.modeRoot !== "") params = this.modeRoot;
       if (this.backRoot !== "") params = this.backRoot;
 
-      console.log("/doc");
       for (let i = 0; i < value.length; i++) {
         if (structure[target]) {
-          setDOM(`${baseUrl}/${target}/${structure[target][params]}`, target);
+          setDOM(`${this.url}/${target}/${structure[target][params]}`, target);
           break;
         } else if (value[i][params]) {
-          setDOM(`${baseUrl}/${key[i]}/${value[i][params]}`, key[i]);
+          setDOM(`${this.url}/${key[i]}/${value[i][params]}`, key[i]);
         }
       }
     };
@@ -130,8 +137,8 @@ const SPA = class {
     const flag = S.getLS("NOTFOUND");
     if (path !== "/" && flag === "true") {
       this.backRoot = path;
-      history.replaceState("", "", path);
       this.assembly();
+      history.replaceState("", "", path);
       this.backRoot = "";
       S.setLS("NOTFOUND", false);
     }
@@ -140,6 +147,8 @@ const SPA = class {
   /**
    * @description switch DOM
    * @param {string} id
+   * @param {string} path
+   * @param {string} target
    */
   Link = (id, path, target) => {
     if (this.modeRoot !== "") return;
@@ -157,10 +166,28 @@ const SPA = class {
 
   /**
    * @description
+   * function to get an element from another file
+   * @param {string} path
+   * @param {string} target
+   */
+  Import = (path, target) => {
+    setDOM(`${this.url}/${path}`, target);
+  };
+
+  /**
+   * @description
+   */
+  Cacher = () => {
+    // 最初に取得するデータを選択できる機能を作成
+    // また取得したデータをキャッシュする機能を作成
+  };
+
+  /**
+   * @description
    * development function set the specified URL as the index URL
    * @param {string} url
    */
-  devMode = (url) => {
+  DevMode = (url) => {
     console.log(`developer mode target path -> ${url}`);
 
     this.modeRoot = url;
@@ -176,4 +203,14 @@ const SPA = class {
 const NotFound = () => {
   S.setLS("NOTFOUND", true);
   window.location.href = "./";
+};
+
+/**
+ * @description
+ * @param {string} structure
+ */
+const SPA = (structure) => {
+  const functions = new Main(structure);
+  window.SPA = functions;
+  return functions;
 };

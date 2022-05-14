@@ -12,28 +12,27 @@
   <body>
     <!-- 作成する基準の要素 -->
     <div id="root"></div>
-    <!-- DOMの構造を定義 -->
-    <script>
-      // 戻り値はDOMを入れ替える関数 + 開発用のURLを変える関数
-      const { Link, devMode } = new SPA(
-        // baseUrl
-        "https://if-kazuki.github.io",
-        // URLごとにどのコンポーネントを表示させたいか
-        {
-          header: {
-            "/": "header.html",
-          },
-          main: {
-            "/": "index.html",
-            "/doc": "doc.html",
-          },
-          footer: {
-            "/": "footer.html",
-          },
-        }
-      );
 
-      // devMode("/doc");
+    <script>
+      // DOMの構造を定義
+      SPA({
+        header: {
+          "/": "header.html",
+        },
+        main: {
+          "/": "index.html",
+          "/doc": "doc.html",
+        },
+        footer: {
+          "/": "footer.html",
+        },
+      });
+
+      // 必要な関数を取得
+      const { Link, Import, Cacher, DevMode } = window.SPA;
+
+      // 開発者モード、ページの固定が可能
+      // DevMode("/doc");
     </script>
   </body>
 </html>

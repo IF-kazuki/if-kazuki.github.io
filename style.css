@@ -10,13 +10,10 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* IE, Edge 対応 スクロールバー削除 */
   -ms-overflow-style: none;
-  /* Firefox 対応 スクロールバー削除 */
   scrollbar-width: none;
 }
 
-/* Chrome, Safari 対応 スクロールバー削除 */
 body::-webkit-scrollbar {
   display: none;
 }

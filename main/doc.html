@@ -1,16 +1,89 @@
-<text>
+<top>
   <title>documentation</title>
+</top>
+
+<text>
   <h1 class="title">document</h1>
 
   <div class="url">
-    <code class="code">https://if-kazuki.github.io/spa.js</code>
+    <code>https://if-kazuki.github.io/spa.js</code>
   </div>
 
-  <div class="explan">Lorem ipsum dolor sit amet.</div>
-  <code class="code">
+  <div class="explan">
+    <p class="top-text">it will be a JS file to easily create a SPA site!!</p>
+    <h1 class="intro-title">.Introduction</h1>
+    <p>please put the above URL inside the head tag.</p>
+    <p>
+      next, create a div tag in index.html that will serve as a reference for
+      creating the DOM, and add root to the id tag.
+    </p>
+    <p>
+      prepare a script tag under the div tag and call a function named SPA in
+      it. the argument represents the directory structrure in JSON format
+    </p>
+    <pre class="code">
+      SPA({
+        header: {
+          "/": "header.html",
+        },
+        main: {
+          "/": "index.html",
+          "/doc": "doc.html",
+        },
+        footer: {
+          "/": "footer.html",
+        },
+      });
+    </pre>
+    <p>
+      the header main footer represents the folder name, and the "/" and "/doc"
+      in it represent the URL. then describe the corresponding file name.
+    </p>
+    <p>
+      also, by calling the SPA function, an object called SPA is added to the
+      window object. it contains various functions used in SPA. it is also
+      possible to get the return value of the SPA function.
+    </p>
+    <pre class="code">
+      const { Link, Import, Cacher, DevMode } = window.SPA;
+    </pre>
+    <p>
+      the link function selects the id tag to be given to the firest argument,
+      the URL of the transition destination in the second argument, and the tag
+      to be updated in the thired argument.
+    </p>
+    <pre class="code">
+      Link("main-doc", "/doc", "main");
+    </pre>
+    <p>
+      the import function, describe the URL to be acquired in the first argument
+      and the tag name to be given in the second argument.
+    </p>
+    <pre class="code">
+      Import("components/codeComponent.html", "codeComponent");
+    </pre>
+    <p>
+      the cacher function can select the HTML file to be acquired in advance
+      during the production.
+    </p>
+    <pre class="code">
+      Cacher();
+    </pre>
+    <p>
+      the devmode function desplays the page you want to desplay as an index
+      page. used during development.
+    </p>
+    <pre class="code">
+      DevMode("/doc");
+    </pre>
+  </div>
 
-  </code>
+  <!-- <codeComponent /> -->
 </text>
+
+<script>
+  // Import("components/codeComponent.html", "codeComponent");
+</script>
 
 <style>
   .title {
@@ -18,19 +91,43 @@
     font-size: 64px;
     margin: 32px 0;
   }
+
   .url {
+    background-color: #25292f;
     text-align: center;
     margin-bottom: 32px;
+    color: white;
+    padding-bottom: 4px;
+    width: 30vw;
+    min-width: 300px;
+    margin: 0 auto;
+    margin-bottom: 32px;
   }
+
   .code {
     background-color: #25292f;
     color: white;
-    padding: 2px 8px;
+    padding-top: 16px;
     border-radius: 2px;
+    width: 50vw;
+    min-width: 300px;
+    margin: 16px auto;
+    overflow: auto;
   }
+
   .explan {
     width: 60vw;
     min-width: 300px;
     margin: 0 auto;
+    padding-bottom: 128px;
+  }
+
+  .top-text {
+    text-align: center;
+  }
+
+  .intro-title {
+    margin: 8px 0;
+    font-size: 20px;
   }
 </style>
