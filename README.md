@@ -1,4 +1,4 @@
-<h1 align="center">SPAjs !!</h1>
+<h1 align="center">spajs !!</h1>
 
 ## Quick Start index.html
 
